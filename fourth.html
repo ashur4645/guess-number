@@ -1,0 +1,136 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <style>
+      .main {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        justify-content: space-evenly;
+      }
+      #userInput {
+        width: 40px;
+        height: 40px;
+        padding: 0 30px;
+      }
+      #addGuess {
+        padding: 10px 20px;
+        border-radius: 20px;
+        background-color: rgb(255, 166, 0);
+      }
+      .two {
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main">
+      <h1>Guess number</h1>
+      <input type="text" id="userInput" />
+      <input type="button" value="Submit Guess" id="addGuess" />
+      <div class="two">
+        <div>
+          your guess
+          <span class="userGuess"></span>
+        </div>
+        <div id="start">
+          your chance
+          <span id="chance">10</span>
+        </div>
+        <p id="highLow"></p>
+      </div>
+    </div>
+  </body>
+  <script>
+    let random = parseInt(Math.random() * 10 + 1);
+    const button = document.querySelector("#addGuess");
+    const guess = document.querySelector("#userInput");
+    const showUserGuess = document.querySelector(".userGuess");
+    const chanceUser = document.querySelector("#chance");
+    const msg = document.querySelector(".highLow");
+    const start = document.querySelector("#start");
+
+    let allguess = [];
+    let chance = 10;
+    let playGame = true;
+    const p = document.createElement("p");
+
+    if (playGame) {
+      button.addEventListener("click", () => {
+        validation(parseInt(guess.value));
+      });
+    }
+    function validation(guess) {
+      if (isNaN(guess)) {
+        display("enter a number");
+      } else if (guess > 100) {
+        display("enter a number is tow high of 100");
+      } else if (guess < 0) {
+        display("enter a number 1 to 100");
+      } else {
+        allguess.push(guess);
+        if (chance === 0) {
+          inputBlank();
+          display(`game is over & random number is ${random}`);
+          endGame();
+        } else {
+          checkGuess(guess);
+        }
+      }
+    }
+    function checkGuess(guess) {
+      if (guess === random) {
+        inputBlank();
+        display(`you are right guess ${guess} `);
+        endGame();
+      } else {
+        displayGuess(guess);
+      }
+    }
+    function displayGuess(guess) {
+      inputBlank();
+      showUserGuess.innerHTML = `  ${allguess} `;
+      chance--;
+      chanceUser.innerHTML = `${chance}`;
+    }
+    function display(message) {
+      inputBlank();
+      highLow.innerHTML = `${message}`;
+    }
+    function endGame() {
+      guess.setAttribute("disabled", "");
+      p.classList.add("button");
+      p.innerHTML = "<p id='newGame'> Start Game<p>";
+      start.appendChild(p);
+      inputBlank();
+      playGame = false;
+      newGame();
+    }
+    function newGame() {
+      const newGa = document.querySelector("#newGame");
+      newGa.addEventListener("click", function () {
+        random = parseInt(Math.random() * 10 + 1);
+        chance = 10;
+        highLow.innerHTML = " ";
+        showUserGuess.innerHTML = " ";
+        chanceUser.innerHTML = "10 ";
+        guess.removeAttribute("disabled");
+        start.removeChild(p);
+        allguess = [];
+        playGame = true;
+      });
+    }
+
+    function inputBlank() {
+      guess.value = " ";
+    }
+  </script>
+</html>
